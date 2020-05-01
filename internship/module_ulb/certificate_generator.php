@@ -1,0 +1,62 @@
+<?php
+include '../src/php/dbh.php';
+require('../assets/fpdf181/fpdf.php');
+require_once("../assets/phpqrcode/qrlib.php");
+session_start();
+$student_name = "";
+$uid = $_GET['uid'];
+$student_last_name ="";
+$institute_name ="";
+$organisation ="";
+$student_last_name ="";
+$start_date = " ";
+$end_date = " ";
+$id = $_SESSION['id'];
+$user = " ";
+$fpdf = new FPDF('L','mm','A4');
+$fpdf->AddPage();
+$fpdf->Image('./certificate1.png', 0, 0,300 ,210);
+$sql = "SELECT r.student_first_name,r.student_last_name,duration,r.student_uid,g.title,g.internship_type,l.starting_date,l.ending_date,l.contact_info,l.id,g.department,g.stiphen,r.institute_name FROM `post_internship_government` g inner join government_internship_apply a on g.company_id = a.company_id inner join student_register r on a.student_uid = r.student_uid inner join letter_format l on l.internship_id = g.uid where r.student_uid='$uid' and  a.company_id='$id'";
+$res = mysqli_query($conn,$sql);
+while($row = mysqli_fetch_assoc($res))
+{   
+$student_name = $row['student_first_name'];
+$student_last_name = $row['student_last_name'];
+$institute_name = $row['institute_name'];
+$organisation = $_SESSION['organisation'];
+$start_date = $row['starting_date'];
+$end_date = $row['ending_date'];
+$user = $_SESSION['user'];
+$date = Date("dd/mm/yy");
+$letter = $row['id'];
+} 
+$student_id = $uid.$organisation.$letter; 
+QRcode::png($student_id,$student_id.'.png');
+$date = Date("d/m/y");
+$fpdf->SetFont('Times','',15);
+$fpdf->Image('./'.$student_id.'.png', 210, 50,30 ,30);
+$fpdf->ln(100);
+$fpdf->Cell(20,7,' ',0,0,'C');
+$fpdf->Cell(60,5,'This is to certify that Mr./Ms.'.$student_name.' '.$student_last_name.' a student of '.$institute_name.' successfully completed ',0,1);
+$fpdf->ln(6);
+$fpdf->Cell(20,7,' ',0,0,'C');
+$fpdf->Cell(108,5,' his/her Internship with From '.$organisation.'. During the period of '.$start_date.' To '.$end_date.'',0,1);
+$fpdf->ln(6);
+$fpdf->Cell(16,7,' ',0,0,'C');
+$fpdf->Cell(108,5,'Internship he/ she worked and assisted the ULB/Smart City in research/fieldwork with due diligence and commitment.',0,1);
+$fpdf->ln(6);   
+$fpdf->Cell(15,7,' ',0,0,'C');
+$fpdf->Cell(108,5,'',0,1);
+$fpdf->Ln(6);
+$fpdf->Cell(15,7,' ',0,0,'C');
+$fpdf->Cell(20,5,'Date:',0,0);
+$fpdf->Cell(20,5,$date,0,1);
+$fpdf->Ln(6);
+$fpdf->Cell(15,7,' ',0,0,1);
+$fpdf->Cell(198,5,''.$user.'',0,0);
+$fpdf->SetFont('Times','U',15);
+$fpdf->Cell(108,5,'Signature',0,0);
+$fpdf->Ln(10);
+$fpdf->Output('../uploads/stu_certificate/'.$student_id.'.pdf','F');
+header("location:./interview_management.php?task=certificate_released");
+											

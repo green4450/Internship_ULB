@@ -1,0 +1,60 @@
+ 
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+ 
+   
+
+/* For use with upload.html */
+.upload .btn {
+  overflow: hidden;
+  width: 100%;
+  height: inherit;
+  padding: 0;
+  display: table-cell;
+  position: relative;
+}
+.upload p {
+  margin: 0;
+  padding: 0.25em 1em;
+  vertical-align: middle;
+  pointer-events: none;
+}
+.upload input {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  height: 1200px;
+  width: 1200px;
+}
+
+/* Table variations */
+.right.table      td, .right.table      th { text-align: right; }
+.compressed.table td, .compressed.table th { padding-left: 2px; padding-right: 2px; }
+
+/* Breaks */
+.page-break {
+    margin-top: 2em;
+}
+@media print {
+  .page-break {
+      page-break-after: always;
+      margin-bottom: 0;
+  }
+}
+
+.no-column-break {
+  -webkit-column-break-inside :avoid;
+  -moz-column-break-inside    :avoid;
+  -o-column-break-inside      :avoid;
+  -ms-column-break-inside     :avoid;
+  column-break-inside         :avoid;
+}
